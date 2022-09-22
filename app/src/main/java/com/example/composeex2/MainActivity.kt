@@ -19,6 +19,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -38,11 +41,14 @@ import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.modifier.modifierLocalOf
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composeex2.ui.theme.ComposeEx2Theme
+import com.example.composeex2.ui.theme.LightBlue
+import com.example.composeex2.ui.theme.Navy
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,7 +58,10 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             ComposeEx2Theme {
+
                 MyApp()
+
+
                 // A surface container using the 'background' color from the theme
 
 
@@ -64,30 +73,24 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun LoopCard() {
-    LazyColumn() {
-        items(100) {
-
-            CardWithMultipleViews("$it") // it - индекс, поскольку это единственный аргумент лямбды
-        }
-    }
-}
-@Composable
 fun MyApp() {
 
-    var shouldShowOnboarding by remember { mutableStateOf(true) }
+    var shouldShowOnboarding by rememberSaveable { mutableStateOf(true) }
 
     if (shouldShowOnboarding) {
         OnboardingScreen(onContinueClicked = { shouldShowOnboarding = false })
     } else {
+
         LazyColumn() {
             items(100) {
 
                 CardWithMultipleViews("$it") // it - индекс, поскольку это единственный аргумент лямбды
             }
         }
+
     }
 }
+
 @Composable
 fun OnboardingScreen(onContinueClicked: () -> Unit) {
 
@@ -126,46 +129,51 @@ fun CardWithMultipleViews(string: String) {
         .padding(horizontal = 10.dp, vertical = 5.dp)
         .clip(RoundedCornerShape(16.dp))
 
-    val colorcard = rgb(228, 228, 228)
+
     Card(
-        elevation = 20.dp,
         modifier = modTwo
     )
     {
-        Surface(color = /*colorcard*/Color.LightGray) {
-            Column(modifier = modOne, horizontalAlignment = Alignment.CenterHorizontally) {
-                Row(modifier = modRow, horizontalArrangement = Arrangement.SpaceBetween) {
-                    Column() {
-                        Text(text = "Hello,", fontSize = 18.sp, modifier = modText)
-                        Text(
-                            text = "$string",
-                            fontSize = 42.sp,
-                            style = MaterialTheme.typography.h4,
-                            fontWeight = FontWeight.Bold,
-                            modifier = modText
-                        )
-                    }
-                    Button(onClick = { hidden = !hidden }, modifier = modBut) {
-                        if (hidden == true) {
-                            Text(text = "Show More", fontSize = 14.sp)
-                        }
 
-                        if (hidden == false) {
-                            Text(text = "Show Less", fontSize = 14.sp)
-                        }
-                    }
-
-                }
-                AnimatedVisibility(!hidden) {
-
+        Column(modifier = modOne, horizontalAlignment = Alignment.CenterHorizontally) {
+            Row(modifier = modRow, horizontalArrangement = Arrangement.SpaceBetween) {
+                Column() {
+                    Text(text = "Hello,", fontSize = 18.sp, modifier = modText)
                     Text(
-                        text = "Lorem ipsum dolor sit amet, consectetur " +
-                                "adipiscing elit. Ut lectus elit, varius ac felis at, congue pulvinar" +
-                                " lorem. Curabitur fringilla faucibus laoreet. " +
-                                "Proin vitae augue.", fontSize = 16.sp
+                        text = "$string",
+                        fontSize = 42.sp,
+                        style = MaterialTheme.typography.h4,
+                        fontWeight = FontWeight.Bold,
+                        modifier = modText
                     )
                 }
+                IconButton(onClick = { hidden = !hidden }, modifier = modBut) {
+                    if (hidden == true) {
+                        Icon(
+                            imageVector = Icons.Filled.ExpandLess, contentDescription =
+                            stringResource(R.string.app_name)
+                        )
+                    }
+
+                    if (hidden == false) {
+                        Icon(
+                            imageVector = Icons.Filled.ExpandMore,
+                            contentDescription = stringResource(R.string.app_name)
+                        )
+                    }
+                }
+
             }
+            AnimatedVisibility(!hidden) {
+
+                Text(
+                    text = "Lorem ipsum dolor sit amet, consectetur " +
+                            "adipiscing elit. Ut lectus elit, varius ac felis at, congue pulvinar" +
+                            " lorem. Curabitur fringilla faucibus laoreet. " +
+                            "Proin vitae augue.", fontSize = 20.sp
+                )
+            }
+
         }
 
 
